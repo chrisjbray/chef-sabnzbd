@@ -8,9 +8,12 @@ apt_repository "sabnzbd" do
   key "4BB9F05F"
 end
 
+#sabnzbdplus-theme-smpl
+#sabnzbdplus-theme-plush
+
 %w{
-  sabnzbdplus sabnzbdplus-theme-smpl
-  sabnzbdplus-theme-plush sabnzbdplus-theme-iphone
+  sabnzbdplus
+  sabnzbdplus-theme-iphone
   }.each do |pkg|
       package pkg do
           action :upgrade
@@ -23,6 +26,13 @@ template "/etc/default/sabnzbdplus" do
   owner "root"
   group "root"
   notifies :restart, 'service[sabnzbdplus]'
+end
+
+user "sabnzbd_user_#{node['sabnzbd']['user']}" do
+  username node['sabnzbd']['user']
+  home '/home/sabnzbd'
+  shell '/bin/false'
+  action :create
 end
 
 directory  "/home/#{node['sabnzbd']['user']}/.sabnzbd/" do
